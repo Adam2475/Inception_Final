@@ -1,7 +1,10 @@
 web
-./srcs/web
 srcs/web
 
 database
-./srcs/database
 srcs/database
+
+/secrets
+
+# ./srcs/.env
+srcs/.env

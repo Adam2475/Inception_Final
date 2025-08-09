@@ -12,6 +12,7 @@ services:
       - ./web:/var/www/html
     networks:
       inception:
+    restart: on-failure
 
   wordpress:
     build: requirements/wordpress/.
@@ -20,16 +21,56 @@ services:
       - mariadb
     volumes:
       - ./web:/var/www/html
+    environment:
+      WP_HOST: mariadb:3306
+      WP_TITLE: ${WP_TITLE}
+      WP_URL: ${WP_URL}
+      WP_ADMIN: ${WP_ADMIN}
+      WP_ADMIN_PASSWORD: ${WP_ADMIN_PASSWORD}
+      WP_ADMIN_EMAIL: ${WP_ADMIN_EMAIL}
+      WP_DB_NAME: ${WP_DB_NAME}
+      WP_USER: ${WP_USER}
+      WP_PASSWORD: ${WP_PASSWORD}
     networks:
       inception:
+    restart: on-failure
 
   mariadb:
     build: requirements/mariadb/.
     container_name: mariadb
+    # load enviroment variables
+    # env_file:
+    #   - .env
+    environment:
+      DB_NAME : ${DB_NAME}
+      DB_USER : ${DB_USER}
+      DB_PASSWORD : ${DB_PASSWORD}
+      DB_ROOT_PASSWORD : ${DB_ROOT_PASSWORD}
     volumes:
       - ./database:/var/lib/mysql
     networks:
       inception:
-  
+    expose:
+      - "3306"
+    restart: on-failure
+
+volumes:
+  wordpress:
+    name: wordpress
+    driver: local
+    # bind volume to not disappear after container stop
+    driver_opts:
+      type: none
+      device: ~/adapassa/data/wp_files
+      o: bind 
+  mariadb:
+    name: mariadb
+    driver: local
+    driver_opts:
+      type: none
+      device: ~/adapassa/data/db_data
+      o: bind
+
 networks:
   inception:
+    name: inception

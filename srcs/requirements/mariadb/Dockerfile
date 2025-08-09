@@ -1,6 +1,8 @@
 FROM debian:bullseye
 
-RUN apt update && apt upgrade -y && apt install mariadb-server -y
+RUN apt update && apt upgrade -y && apt install \
+    mariadb-server -y \
+    gettext-base -y
 
 COPY 50-server.cnf /etc/mysql/mariadb.conf.d/.
 COPY init.sql /etc/mysql/init.sql
