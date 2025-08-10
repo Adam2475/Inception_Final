@@ -21,16 +21,24 @@ services:
       - mariadb
     volumes:
       - ./web:/var/www/html
+    secrets:
+      - credentials
+      - db_password
+      - db_root_password
     environment:
-      WP_HOST: mariadb:3306
+      WP_HOST: ${WP_HOST}
       WP_TITLE: ${WP_TITLE}
       WP_URL: ${WP_URL}
       WP_ADMIN: ${WP_ADMIN}
-      WP_ADMIN_PASSWORD: ${WP_ADMIN_PASSWORD}
-      WP_ADMIN_EMAIL: ${WP_ADMIN_EMAIL}
+      # WP_ADMIN_PASSWORD: /run/secrets/db_root_password
+      # WP_ADMIN_EMAIL: /run/secrets/credentials
       WP_DB_NAME: ${WP_DB_NAME}
       WP_USER: ${WP_USER}
-      WP_PASSWORD: ${WP_PASSWORD}
+      # WP_PASSWORD: /run/secrets/db_password
+      DB_NAME : ${DB_NAME}
+      DB_USER : ${DB_USER}
+      # DB_PASSWORD : /run/secrets/db_password
+      # DB_ROOT_PASSWORD : /run/secrets/db_root_password
     networks:
       inception:
     restart: on-failure
@@ -41,11 +49,14 @@ services:
     # load enviroment variables
     # env_file:
     #   - .env
+    secrets:
+      - db_password
+      - db_root_password
     environment:
       DB_NAME : ${DB_NAME}
       DB_USER : ${DB_USER}
-      DB_PASSWORD : ${DB_PASSWORD}
-      DB_ROOT_PASSWORD : ${DB_ROOT_PASSWORD}
+      DB_PASSWORD : /run/secrets/db_password
+      DB_ROOT_PASSWORD : /run/secrets/db_root_password
     volumes:
       - ./database:/var/lib/mysql
     networks:
@@ -74,3 +85,11 @@ volumes:
 networks:
   inception:
     name: inception
+
+secrets:
+  credentials:
+    file: ../secrets/credentials.txt
+  db_password:
+    file: ../secrets/db_password.txt
+  db_root_password:
+    file: ../secrets/db_root_password.txt

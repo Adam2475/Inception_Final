@@ -8,8 +8,8 @@ RUN apt update && apt upgrade -y && apt install -y \
 # Create missing directory
 RUN mkdir -p /run/php
 
-COPY www.conf /etc/php/7.4/fpm/pool.d/.
-COPY ./init.sh .
+COPY ./tools/www.conf /etc/php/7.4/fpm/pool.d/.
+COPY ./tools/init.sh .
 
 RUN chmod +x init.sh
 
